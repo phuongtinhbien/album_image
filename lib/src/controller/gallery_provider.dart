@@ -5,8 +5,11 @@ import 'package:photo_manager/photo_manager.dart';
 mixin PhotoDataProvider on ChangeNotifier {
   /// current gallery album
   final currentPathNotifier = ValueNotifier<AssetPathEntity?>(null);
+
   AssetPathEntity? _current;
+
   AssetPathEntity? get currentPath => _current;
+
   set currentPath(AssetPathEntity? current) {
     if (_current != current) {
       _current = current;
@@ -53,28 +56,23 @@ mixin PhotoDataProvider on ChangeNotifier {
 
 class PickerDataProvider extends ChangeNotifier with PhotoDataProvider {
   /// Notification when max is modified.
-  final maxNotifier = ValueNotifier(0);
-  int get max => maxNotifier.value;
-  set max(int value) => maxNotifier.value = value;
+  final maxSelection = ValueNotifier(0);
+
+  int get max => maxSelection.value;
+
+  set max(int value) => maxSelection.value = value;
+
   final onPickMax = ChangeNotifier();
 
-  /// In single-select mode, when you click an unselected item, the old one is automatically cleared and the new one is selected.
-  bool get singlePickMode => _singlePickMode;
-  bool _singlePickMode = false;
-  set singlePickMode(bool singlePickMode) {
-    _singlePickMode = singlePickMode;
-    if (singlePickMode) {
-      maxNotifier.value = 1;
-      notifyListeners();
-    }
-    maxNotifier.value = max;
-    notifyListeners();
-  }
+  /// In single-select mode, when you click an unselected item,
+  /// the old one is automatically cleared and the new one is selected.
+  bool get singlePickMode => maxSelection.value == 1;
 
   /// pick asset entity
   /// notify changes
   final pickedNotifier = ValueNotifier<List<AssetEntity>>([]);
   List<AssetEntity> picked = [];
+
   void pickEntity(AssetEntity entity) {
     if (singlePickMode) {
       if (picked.contains(entity)) {
@@ -87,7 +85,7 @@ class PickerDataProvider extends ChangeNotifier with PhotoDataProvider {
       if (picked.contains(entity)) {
         picked.remove(entity);
       } else {
-        if (picked.length == max) {
+        if (picked.length == maxSelection.value) {
           onPickMax.notifyListeners();
           return;
         }
@@ -101,7 +99,9 @@ class PickerDataProvider extends ChangeNotifier with PhotoDataProvider {
 
   /// metadata map
   final pickedFileNotifier = ValueNotifier<List<Map<String, dynamic>>>([{}]);
+
   List<Map<String, dynamic>> pickedFile = [];
+
   void pickPath(Map<String, dynamic> path) {
     if (singlePickMode) {
       if (pickedFile
@@ -118,7 +118,7 @@ class PickerDataProvider extends ChangeNotifier with PhotoDataProvider {
           .isNotEmpty) {
         pickedFile.removeWhere((val) => val['id'] == path['id']);
       } else {
-        if (pickedFile.length == max) {
+        if (pickedFile.length == maxSelection.value) {
           onPickMax.notifyListeners();
           return;
         }
@@ -133,5 +133,9 @@ class PickerDataProvider extends ChangeNotifier with PhotoDataProvider {
   /// picked path index
   int pickIndex(AssetEntity entity) {
     return picked.indexOf(entity);
+  }
+
+  PickerDataProvider({this.picked = const [], required int maxSelectionCount}) {
+    maxSelection.value = maxSelectionCount;
   }
 }

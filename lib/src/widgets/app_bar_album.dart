@@ -1,14 +1,11 @@
-import 'package:album_image/src/provider/gallery_provider.dart';
+import 'package:album_image/src/controller/gallery_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'dropdown.dart';
 
-class SelectedPathDropdownButton extends StatelessWidget {
+class AppBarAlbum extends StatelessWidget {
   /// picker provider
-  final PhotoDataProvider provider;
+  final PickerDataProvider provider;
 
-  /// global key
-  final GlobalKey? dropdownRelativeKey;
   final Color appBarColor;
 
   /// appBar TextColor
@@ -21,7 +18,7 @@ class SelectedPathDropdownButton extends StatelessWidget {
   final Color albumBackGroundColor;
 
   /// album text color
-  final TextStyle? albumTextStyle;
+  final TextStyle albumTextStyle;
 
   /// album divider color
   final Color albumDividerColor;
@@ -30,23 +27,22 @@ class SelectedPathDropdownButton extends StatelessWidget {
   final Widget? appBarLeadingWidget;
 
   ///appBar actions widgets
-  final Widget? appBarActionWidget;
+  final List<Widget>? appBarActionWidgets;
 
   final double itemPathHeight;
 
-  const SelectedPathDropdownButton(
+  const AppBarAlbum(
       {Key? key,
       required this.provider,
-      required this.dropdownRelativeKey,
       this.appBarTextStyle,
       required this.appBarIconColor,
       required this.appBarColor,
       required this.albumBackGroundColor,
       required this.albumDividerColor,
-      this.albumTextStyle,
+      this.albumTextStyle = const TextStyle(color: Colors.white, fontSize: 18),
       this.itemPathHeight = 65,
       this.appBarLeadingWidget,
-      this.appBarActionWidget})
+      this.appBarActionWidgets})
       : super(key: key);
 
   @override
@@ -57,41 +53,8 @@ class SelectedPathDropdownButton extends StatelessWidget {
         automaticallyImplyLeading: false,
         leading: appBarLeadingWidget,
         backgroundColor: appBarColor,
-        actions: [appBarActionWidget ?? Container()],
-        title: Column(
-          children: [
-            DropdownButton<AssetPathEntity>(
-                style: albumTextStyle ??
-                    const TextStyle(color: Colors.white, fontSize: 18),
-                value: provider.currentPath,
-                isDense: true,
-                dropdownColor: albumBackGroundColor,
-                icon: Icon(
-                  Icons.keyboard_arrow_down,
-                  color: appBarIconColor,
-                ),
-                borderRadius: BorderRadius.circular(4),
-                elevation: 2,
-                itemHeight: null,
-                underline: const SizedBox(),
-                items: provider.pathList
-                    .map((e) => DropdownMenuItem<AssetPathEntity>(
-                        value: e,
-                        child: Text(
-                          e.name,
-                          overflow: TextOverflow.ellipsis,
-                          style: albumTextStyle ??
-                              const TextStyle(
-                                  color: Colors.white, fontSize: 16),
-                        )))
-                    .toList(),
-                onChanged: (value) {
-                  if (value != null) {
-                    provider.currentPath = value;
-                  }
-                }),
-          ],
-        ),
+        actions: appBarActionWidgets,
+        title: buildButton(context, ValueNotifier(false)),
         centerTitle: true,
       ),
     );
@@ -115,41 +78,53 @@ class SelectedPathDropdownButton extends StatelessWidget {
         decoration: decoration,
       );
     } else {
-      return Container(
-        decoration: decoration,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 100),
-              child: Text(
+      return GestureDetector(
+        onTap: () {
+          showModalBottomSheet(
+              context: context,
+              constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height/3),
+              enableDrag: true,
+
+              builder: (_) {
+                return ChangePathWidget(
+                  albumDividerColor: albumDividerColor,
+                  provider: provider,
+                  itemHeight: 45,
+                  close: (AssetPathEntity value) {
+                    provider.currentPath = value;
+                  },
+                  albumBackGroundColor: albumBackGroundColor,
+                );
+              });
+        },
+        child: Container(
+          decoration: decoration,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
                 provider.currentPath!.name,
                 overflow: TextOverflow.ellipsis,
-                style: appBarTextStyle ??
-                    const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        letterSpacing: 0.8,
-                        fontWeight: FontWeight.w500),
+                style: albumTextStyle,
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 8),
-              child: AnimatedBuilder(
-                child: Icon(
-                  Icons.keyboard_arrow_down,
-                  color: appBarIconColor,
+              Padding(
+                padding: const EdgeInsets.only(left: 8),
+                child: AnimatedBuilder(
+                  child: Icon(
+                    Icons.keyboard_arrow_down,
+                    color: albumTextStyle.color!,
+                  ),
+                  animation: arrowDownNotifier,
+                  builder: (BuildContext context, child) {
+                    return AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      child: child,
+                    );
+                  },
                 ),
-                animation: arrowDownNotifier,
-                builder: (BuildContext context, child) {
-                  return AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    child: child,
-                  );
-                },
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
     }
