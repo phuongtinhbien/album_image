@@ -120,7 +120,8 @@ class AlbumImagePicker extends StatefulWidget {
   _AlbumImagePickerState createState() => _AlbumImagePickerState();
 }
 
-class _AlbumImagePickerState extends State<AlbumImagePicker> with AutomaticKeepAliveClientMixin {
+class _AlbumImagePickerState extends State<AlbumImagePicker>
+    with AutomaticKeepAliveClientMixin {
   /// create object of PickerDataProvider
   late PickerDataProvider provider;
 
@@ -254,5 +255,5 @@ class _AlbumImagePickerState extends State<AlbumImagePicker> with AutomaticKeepA
   }
 
   @override
-  bool get wantKeepAlive =>true;
+  bool get wantKeepAlive => true;
 }
