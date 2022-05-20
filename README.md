@@ -8,7 +8,7 @@ Album Image is based in [photo_manager](https://pub.dev/packages/photo_manager) 
 
 [✓] pick multi image / video
 
-[✓] cover thumbnail (preview first image on gallery)
+[✔] cover thumbnail (preview first image on gallery)
 
 [❌] take picture or video from camera
 
@@ -35,43 +35,6 @@ add this config in your `info.plist` file
      <key>NSPhotoLibraryAddUsageDescription</key>
      <string>NSPhotoLibraryAddUsageDescription</string>
  ```
-
-## How to use
-Create a `GalleryMediaPicker()` widget:
-```dart
-AlbumImagePicker(
-onSelected: (items) {},
-iconSelectionBuilder: (_, selected, index) {
-if (selected) {
-return CircleAvatar(
-child: Text(
-'${index + 1}',
-style: const TextStyle(fontSize: 10, height: 1.4),
-),
-radius: 10,
-);
-}
-return Container();
-},
-crossAxisCount: 3,
-maxSelection: 4,
-onSelectedMax: () {
-print('Reach max');
-},
-albumBackGroundColor: Colors.white,
-appBarHeight: 45,
-itemBackgroundColor: Colors.grey[100]!,
-appBarColor: Colors.white,
-albumTextStyle: const TextStyle(color: Colors.black, fontSize: 14),
-albumSubTextStyle:
-const TextStyle(color: Colors.grey, fontSize: 10),
-type: AlbumType.image,
-closeWidget: const BackButton(
-color: Colors.black,
-),
-thumbnailQuality: thumbnailQuality * 3,
-);
-```
 
 ## Example
 ```dart
