@@ -7,7 +7,7 @@ import 'package:photo_manager/photo_manager.dart';
 import 'enum/album_type.dart';
 
 typedef IconWidgetBuilder = Widget Function(
-    BuildContext context, bool selected);
+    BuildContext context, bool selected, int index);
 
 class AlbumImagePicker extends StatefulWidget {
   /// maximum images allowed (default 1)
@@ -63,6 +63,7 @@ class AlbumImagePicker extends StatefulWidget {
   final Color appBarColor;
 
   ///Icon widget builder
+  ///index = -1, not selected yet
   final IconWidgetBuilder? iconSelectionBuilder;
 
   ///Close widget
@@ -70,6 +71,21 @@ class AlbumImagePicker extends StatefulWidget {
 
   ///appBar actions widgets
   final List<Widget>? appBarActionWidgets;
+
+  /// album text color
+  final TextStyle albumTextStyle;
+
+  /// album sub text color
+  final TextStyle albumSubTextStyle;
+
+  /// album text color
+  final double appBarHeight;
+
+  /// album background color
+  final Color albumBackGroundColor;
+
+  /// album divider color
+  final Color albumDividerColor;
 
   const AlbumImagePicker(
       {Key? key,
@@ -86,6 +102,12 @@ class AlbumImagePicker extends StatefulWidget {
       this.itemBackgroundColor = Colors.grey,
       this.selectedItemBackgroundColor = Colors.grey,
       this.appBarColor = Colors.redAccent,
+      this.albumTextStyle = const TextStyle(color: Colors.white, fontSize: 18),
+      this.albumSubTextStyle =
+          const TextStyle(color: Colors.white, fontSize: 14),
+      this.appBarHeight = 45,
+      this.albumBackGroundColor = const Color(0xFF333333),
+      this.albumDividerColor = const Color(0xFF484848),
       this.appBarActionWidgets,
       this.closeWidget,
       this.iconSelectionBuilder,
@@ -179,15 +201,17 @@ class _AlbumImagePickerState extends State<AlbumImagePicker> {
         /// album drop down
         AppBarAlbum(
           provider: provider,
-          appBarIconColor: const Color(0xFFB2B2B2),
-          albumDividerColor: const Color(0xFF484848),
-          albumBackGroundColor: const Color(0xFF333333),
+          albumDividerColor: widget.albumDividerColor,
+          albumBackGroundColor: widget.albumBackGroundColor,
           appBarColor: widget.appBarColor,
+          albumTextStyle: widget.albumTextStyle,
+          albumSubTextStyle: widget.albumSubTextStyle,
+          height: widget.appBarHeight,
           appBarLeadingWidget: widget.closeWidget ?? _defaultCloseWidget(),
           appBarActionWidgets: widget.appBarActionWidgets,
         ),
 
-        /// grid view
+        /// grid image view
         Expanded(
           child: ValueListenableBuilder<AssetPathEntity?>(
             valueListenable: provider.currentPathNotifier,
@@ -197,7 +221,6 @@ class _AlbumImagePickerState extends State<AlbumImagePicker> {
                     thumbnailQuality: widget.thumbnailQuality,
                     provider: provider,
                     padding: widget.gridPadding,
-                    loadWhenScrolling: true,
                     childAspectRatio: widget.childAspectRatio,
                     crossAxisCount: widget.crossAxisCount,
                     gridViewBackgroundColor: widget.listBackgroundColor,

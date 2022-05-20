@@ -1,6 +1,6 @@
 import 'package:album_image/src/album_image_picker.dart';
 import 'package:album_image/src/controller/gallery_provider.dart';
-import 'package:album_image/src/widgets/thumbnail_widget.dart';
+import 'package:album_image/src/widgets/thumbnail_image_widget.dart';
 import 'package:flutter/material.dart';
 
 import 'package:photo_manager/photo_manager.dart';
@@ -11,9 +11,6 @@ typedef OnAssetItemClick = void Function(
 class GalleryGridView extends StatefulWidget {
   /// asset album
   final AssetPathEntity path;
-
-  /// load if scrolling is false
-  final bool loadWhenScrolling;
 
   /// on tap thumbnail
   final OnAssetItemClick? onAssetItemClick;
@@ -62,7 +59,6 @@ class GalleryGridView extends StatefulWidget {
       required this.path,
       required this.provider,
       this.onAssetItemClick,
-      this.loadWhenScrolling = false,
       this.childAspectRatio = 0.5,
       this.gridViewBackgroundColor = Colors.white,
       this.crossAxisCount = 3,
@@ -94,7 +90,7 @@ class _GalleryGridViewState extends State<GalleryGridView> {
 
   @override
   Widget build(BuildContext context) {
-    /// generate thumbnail grid view
+    /// generate thumbnail image grid view
     return NotificationListener<ScrollNotification>(
       onNotification: _onScroll,
       child: Container(
@@ -125,7 +121,8 @@ class _GalleryGridViewState extends State<GalleryGridView> {
       /// on tap thumbnail
       onTap: () async {
         final asset = cacheMap[index] ??
-            (await widget.path.getAssetListRange(start: index, end: index + 1))[0];
+            (await widget.path
+                .getAssetListRange(start: index, end: index + 1))[0];
         widget.onAssetItemClick?.call(context, asset, index);
       },
 
@@ -149,19 +146,19 @@ class _GalleryGridViewState extends State<GalleryGridView> {
             color: widget.imageBackgroundColor,
           );
         }
-        final asset = cachedImage ?? snapshot.data![0];
+
+        final asset = cachedImage ?? snapshot.data!.first;
         cacheMap[index] = asset;
 
         /// thumbnail widget
-        return ThumbnailWidget(
+        return ThumbnailImageWidget(
           asset: asset,
-          index: index,
           provider: provider,
           thumbnailQuality: widget.thumbnailQuality,
           selectedBackgroundColor: widget.selectedBackgroundColor,
           iconSelectionBuilder: widget.iconSelectionBuilder,
           imageBackgroundColor: widget.imageBackgroundColor,
-          thumbnailBoxFix: widget.thumbnailBoxFix,
+          fit: widget.thumbnailBoxFix,
           selectedCheckBackgroundColor: widget.selectedCheckBackgroundColor,
         );
       },

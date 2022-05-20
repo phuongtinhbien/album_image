@@ -1,4 +1,5 @@
 import 'package:album_image/src/controller/gallery_provider.dart';
+import 'package:album_image/src/widgets/thumbnail_path.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 
@@ -8,17 +9,14 @@ class AppBarAlbum extends StatelessWidget {
 
   final Color appBarColor;
 
-  /// appBar TextColor
-  final TextStyle? appBarTextStyle;
-
-  /// appBar icon Color
-  final Color appBarIconColor;
-
   /// album background color
   final Color albumBackGroundColor;
 
   /// album text color
   final TextStyle albumTextStyle;
+
+  /// album sub text color
+  final TextStyle albumSubTextStyle;
 
   /// album divider color
   final Color albumDividerColor;
@@ -29,38 +27,39 @@ class AppBarAlbum extends StatelessWidget {
   ///appBar actions widgets
   final List<Widget>? appBarActionWidgets;
 
-  final double itemPathHeight;
+  final double height;
 
   const AppBarAlbum(
       {Key? key,
       required this.provider,
-      this.appBarTextStyle,
-      required this.appBarIconColor,
       required this.appBarColor,
       required this.albumBackGroundColor,
       required this.albumDividerColor,
       this.albumTextStyle = const TextStyle(color: Colors.white, fontSize: 18),
-      this.itemPathHeight = 65,
+      this.albumSubTextStyle =
+          const TextStyle(color: Colors.white, fontSize: 14),
+      this.height = 65,
       this.appBarLeadingWidget,
       this.appBarActionWidgets})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: provider.currentPathNotifier,
-      builder: (_, __) => AppBar(
+    return ValueListenableBuilder(
+      valueListenable: provider.currentPathNotifier,
+      builder: (_, value, __) => AppBar(
         automaticallyImplyLeading: false,
         leading: appBarLeadingWidget,
+        toolbarHeight: height,
         backgroundColor: appBarColor,
         actions: appBarActionWidgets,
-        title: buildButton(context, ValueNotifier(false)),
+        title: _buildAlbumButton(context, ValueNotifier(false)),
         centerTitle: true,
       ),
     );
   }
 
-  Widget buildButton(
+  Widget _buildAlbumButton(
     BuildContext context,
     ValueNotifier<bool> arrowDownNotifier,
   ) {
@@ -82,16 +81,20 @@ class AppBarAlbum extends StatelessWidget {
         onTap: () {
           showModalBottomSheet(
               context: context,
-              constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height/3),
+              constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height / 2.5),
               enableDrag: true,
-
+              backgroundColor: Colors.transparent,
               builder: (_) {
                 return ChangePathWidget(
                   albumDividerColor: albumDividerColor,
+                  albumTextStyle: albumTextStyle,
+                  albumSubTextStyle: albumSubTextStyle,
                   provider: provider,
                   itemHeight: 45,
-                  close: (AssetPathEntity value) {
+                  close: (value) {
                     provider.currentPath = value;
+                    Navigator.pop(context);
                   },
                   albumBackGroundColor: albumBackGroundColor,
                 );
@@ -108,11 +111,12 @@ class AppBarAlbum extends StatelessWidget {
                 style: albumTextStyle,
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 8),
+                padding: const EdgeInsets.only(left: 4),
                 child: AnimatedBuilder(
                   child: Icon(
                     Icons.keyboard_arrow_down,
                     color: albumTextStyle.color!,
+                    size: albumTextStyle.fontSize! * 1.5,
                   ),
                   animation: arrowDownNotifier,
                   builder: (BuildContext context, child) {
@@ -141,6 +145,9 @@ class ChangePathWidget extends StatefulWidget {
   /// album text color
   final TextStyle? albumTextStyle;
 
+  /// album text sub color
+  final TextStyle? albumSubTextStyle;
+
   /// album divider color
   final Color albumDividerColor;
 
@@ -153,6 +160,7 @@ class ChangePathWidget extends StatefulWidget {
       required this.albumBackGroundColor,
       required this.albumDividerColor,
       this.albumTextStyle,
+      this.albumSubTextStyle,
       this.itemHeight = 65})
       : super(key: key);
 
@@ -163,28 +171,49 @@ class ChangePathWidget extends StatefulWidget {
 class _ChangePathWidgetState extends State<ChangePathWidget> {
   PickerDataProvider get provider => widget.provider;
 
-  ScrollController? controller;
+  late ScrollController controller;
+
+  late int currentIndex;
 
   @override
   void initState() {
     super.initState();
-    final index = provider.pathList.indexOf(provider.currentPath!);
+    currentIndex = provider.pathList.indexOf(provider.currentPath!);
     controller =
-        ScrollController(initialScrollOffset: widget.itemHeight * index);
+        ScrollController(initialScrollOffset: widget.itemHeight * currentIndex);
   }
 
   @override
   Widget build(BuildContext context) {
     return Material(
       color: widget.albumBackGroundColor,
+      borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(16), topRight: Radius.circular(16)),
       child: MediaQuery.removePadding(
         removeTop: true,
         context: context,
-        child: ListView.builder(
-          controller: controller,
-          shrinkWrap: true,
-          itemCount: provider.pathList.length,
-          itemBuilder: _buildItem,
+        child: Column(
+          children: [
+            Container(
+              width: 24,
+              height: 4,
+              margin: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                  color: Colors.grey, borderRadius: BorderRadius.circular(18)),
+            ),
+            Expanded(
+              child: ListView.separated(
+                controller: controller,
+                itemCount: provider.pathList.length,
+                itemBuilder: _buildItem,
+                separatorBuilder: (context, index) {
+                  return Container(
+                    color: widget.albumDividerColor,
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -192,42 +221,52 @@ class _ChangePathWidgetState extends State<ChangePathWidget> {
 
   Widget _buildItem(BuildContext context, int index) {
     final item = provider.pathList[index];
-    Widget w = SizedBox(
-      height: widget.itemHeight,
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Text(
-            item.name,
-            overflow: TextOverflow.ellipsis,
-            style: widget.albumTextStyle ??
-                const TextStyle(color: Colors.white, fontSize: 18),
-          ),
+    return GestureDetector(
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Row(
+          children: [
+            ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: Image(
+                  image: ThumbnailPath(item, thumbSize: 100),
+                  fit: BoxFit.cover,
+                  width: widget.itemHeight,
+                  height: widget.itemHeight,
+                )),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item.name,
+                      overflow: TextOverflow.ellipsis,
+                      style: widget.albumTextStyle ??
+                          const TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                    const SizedBox(
+                      height: 4,
+                    ),
+                    Text(
+                      '${item.assetCount}',
+                      overflow: TextOverflow.ellipsis,
+                      style: widget.albumSubTextStyle ??
+                          const TextStyle(color: Colors.white, fontSize: 14),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            AnimatedOpacity(
+              opacity: currentIndex == index ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 200),
+              child: Icon(Icons.check),
+            )
+          ],
         ),
       ),
-    );
-    w = Stack(
-      children: <Widget>[
-        /// list of album
-        w,
-
-        /// divider
-        Positioned(
-          height: 1,
-          bottom: 0,
-          right: 0,
-          left: 1,
-          child: IgnorePointer(
-            child: Container(
-              color: widget.albumDividerColor,
-            ),
-          ),
-        ),
-      ],
-    );
-    return GestureDetector(
-      child: w,
       behavior: HitTestBehavior.translucent,
       onTap: () {
         widget.close.call(item);

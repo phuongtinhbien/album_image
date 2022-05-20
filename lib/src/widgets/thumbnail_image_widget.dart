@@ -4,7 +4,7 @@ import 'package:album_image/src/controller/gallery_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 
-class ThumbnailWidget extends StatelessWidget {
+class ThumbnailImageWidget extends StatelessWidget {
   /// asset entity
   final AssetEntity asset;
 
@@ -26,20 +26,17 @@ class ThumbnailWidget extends StatelessWidget {
   /// selected Check Background Color
   final Color selectedCheckBackgroundColor;
 
-  final int index;
-
   /// thumbnail box fit
-  final BoxFit thumbnailBoxFix;
+  final BoxFit fit;
 
-  const ThumbnailWidget({
+  const ThumbnailImageWidget({
     Key? key,
     required this.asset,
     required this.provider,
-    required this.index,
     this.thumbnailQuality = 200,
     this.imageBackgroundColor = Colors.white,
     this.selectedBackgroundColor = Colors.white,
-    this.thumbnailBoxFix = BoxFit.cover,
+    this.fit = BoxFit.cover,
     this.selectedCheckBackgroundColor = Colors.white,
     this.iconSelectionBuilder,
   }) : super(key: key);
@@ -49,7 +46,6 @@ class ThumbnailWidget extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
       children: [
-        /// background gradient from image
         Container(
           decoration: BoxDecoration(color: imageBackgroundColor),
         ),
@@ -66,7 +62,7 @@ class ThumbnailWidget extends StatelessWidget {
                 child: Image.memory(
                   data.data!,
                   gaplessPlayback: true,
-                  fit: thumbnailBoxFix,
+                  fit: fit,
                 ),
               );
             } else {
@@ -76,6 +72,7 @@ class ThumbnailWidget extends StatelessWidget {
         ),
 
         /// selected image color mask
+        /// icon selection
         AnimatedBuilder(
             animation: provider,
             builder: (_, __) {
@@ -98,7 +95,8 @@ class ThumbnailWidget extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.only(right: 5, top: 5),
                       child: iconSelectionBuilder != null
-                          ? iconSelectionBuilder!.call(context, picked)
+                          ? iconSelectionBuilder!
+                              .call(context, picked, pickIndex)
                           : defaultIconSelectionBuilder(context, picked),
                     ),
                   ),

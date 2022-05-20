@@ -2,6 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 
+typedef SortListBy = int Function(
+  AssetPathEntity a,
+  AssetPathEntity b,
+);
 mixin PhotoDataProvider on ChangeNotifier {
   /// current gallery album
   final currentPathNotifier = ValueNotifier<AssetPathEntity?>(null);
@@ -39,11 +43,7 @@ mixin PhotoDataProvider on ChangeNotifier {
   void resetPathList(
     List<AssetPathEntity> list, {
     int defaultIndex = 0,
-    int Function(
-      AssetPathEntity a,
-      AssetPathEntity b,
-    )
-        sortBy = _defaultSort,
+    SortListBy sortBy = _defaultSort,
   }) {
     list.sort(sortBy);
     pathList.clear();
@@ -55,26 +55,22 @@ mixin PhotoDataProvider on ChangeNotifier {
 }
 
 class PickerDataProvider extends ChangeNotifier with PhotoDataProvider {
-  /// Notification when max is modified.
+  final List<AssetEntity> picked;
+
+  final pickedNotifier = ValueNotifier<List<AssetEntity>>([]);
+
+  final onPickMax = ChangeNotifier();
+
   final maxSelection = ValueNotifier(0);
 
   int get max => maxSelection.value;
 
   set max(int value) => maxSelection.value = value;
 
-  final onPickMax = ChangeNotifier();
-
-  /// In single-select mode, when you click an unselected item,
-  /// the old one is automatically cleared and the new one is selected.
-  bool get singlePickMode => maxSelection.value == 1;
-
-  /// pick asset entity
-  /// notify changes
-  final pickedNotifier = ValueNotifier<List<AssetEntity>>([]);
-  List<AssetEntity> picked = [];
+  bool get singleMode => maxSelection.value == 1;
 
   void pickEntity(AssetEntity entity) {
-    if (singlePickMode) {
+    if (singleMode) {
       if (picked.contains(entity)) {
         picked.remove(entity);
       } else {
@@ -97,40 +93,6 @@ class PickerDataProvider extends ChangeNotifier with PhotoDataProvider {
     notifyListeners();
   }
 
-  /// metadata map
-  final pickedFileNotifier = ValueNotifier<List<Map<String, dynamic>>>([{}]);
-
-  List<Map<String, dynamic>> pickedFile = [];
-
-  void pickPath(Map<String, dynamic> path) {
-    if (singlePickMode) {
-      if (pickedFile
-          .where((element) => element['id'] == path['id'])
-          .isNotEmpty) {
-        pickedFile.removeWhere((val) => val['id'] == path['id']);
-      } else {
-        pickedFile.clear();
-        pickedFile.add(path);
-      }
-    } else {
-      if (pickedFile
-          .where((element) => element['id'] == path['id'])
-          .isNotEmpty) {
-        pickedFile.removeWhere((val) => val['id'] == path['id']);
-      } else {
-        if (pickedFile.length == maxSelection.value) {
-          onPickMax.notifyListeners();
-          return;
-        }
-        pickedFile.add(path);
-      }
-    }
-    pickedFileNotifier.value = pickedFile;
-    pickedFileNotifier.notifyListeners();
-    notifyListeners();
-  }
-
-  /// picked path index
   int pickIndex(AssetEntity entity) {
     return picked.indexOf(entity);
   }
