@@ -1,7 +1,8 @@
 name: album_image
 description: A new Flutter project.
 version: 0.0.1
-homepage:
+homepage: https://github.com/phuongtinhbien/album_image.git
+repository: https://github.com/phuongtinhbien/album_image.git
 
 environment:
   sdk: ">=2.16.2 <3.0.0"
