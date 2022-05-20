@@ -1,8 +1,5 @@
 import 'package:album_image/album_image.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
-
-import 'package:flutter/services.dart';
 
 void main() {
   runApp(const MyApp());
