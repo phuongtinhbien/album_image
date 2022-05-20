@@ -2,13 +2,13 @@ Album Image is based in [photo_manager](https://pub.dev/packages/photo_manager) 
 
 ## Features
 
-[✔] pick image
+[✓] pick image
 
-[✔] pick video
+[✓] pick video
 
-[✔] pick multi image / video
+[✓] pick multi image / video
 
-[✔] cover thumbnail (preview first image on gallery)
+[✓] cover thumbnail (preview first image on gallery)
 
 [❌] take picture or video from camera
 
