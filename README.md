@@ -10,12 +10,6 @@ Album Image is based in [photo_manager](https://pub.dev/packages/photo_manager) 
 
 [❌] take picture or video from camera
 
-## Installation
-1) This package has only tested in android, add `album_image: 0.0.1` in your `pubspec.yaml`
-2) import `album_image`
-```dart
-import 'package:album_image/album_image.dart';
-```
 
 ## Demo Images
 
@@ -23,6 +17,12 @@ import 'package:album_image/album_image.dart';
 <img src="https://github.com/phuongtinhbien/album_image/blob/master/example_images/2022-05-20%2017.09.13.jpg" title="custom view" width="200"/>
 
 
+## Installation
+1) This package has only tested in android, add `album_image: 0.0.1` in your `pubspec.yaml`
+2) import `album_image`
+```dart
+import 'package:album_image/album_image.dart';
+```
 
 
 ## Getting started
