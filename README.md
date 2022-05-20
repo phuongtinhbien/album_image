@@ -17,6 +17,13 @@ Album Image is based in [photo_manager](https://pub.dev/packages/photo_manager) 
 import 'package:album_image/album_image.dart';
 ```
 
+##Demo Images
+<img src="https://github.com/phuongtinhbien/album_image/blob/master/example_images/2022-05-20%2017.09.10.jpg" title="custom view" width="200"/>
+<img src="https://github.com/phuongtinhbien/album_image/blob/master/example_images/2022-05-20%2017.09.13.jpg" title="custom view" width="200"/>
+
+
+
+
 ## Getting started
 #### Android
 add uses-permission `AndroidMAnifest.xml` file
