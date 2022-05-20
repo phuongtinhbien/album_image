@@ -8,8 +8,6 @@ Album Image is based in [photo_manager](https://pub.dev/packages/photo_manager) 
 
 [✓] pick multi image / video
 
-[✔] cover thumbnail (preview first image on gallery)
-
 [❌] take picture or video from camera
 
 ## Installation
