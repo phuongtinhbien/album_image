@@ -120,7 +120,7 @@ class AlbumImagePicker extends StatefulWidget {
   _AlbumImagePickerState createState() => _AlbumImagePickerState();
 }
 
-class _AlbumImagePickerState extends State<AlbumImagePicker> {
+class _AlbumImagePickerState extends State<AlbumImagePicker> with AutomaticKeepAliveClientMixin {
   /// create object of PickerDataProvider
   late PickerDataProvider provider;
 
@@ -196,6 +196,7 @@ class _AlbumImagePickerState extends State<AlbumImagePicker> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Column(
       children: [
         /// album drop down
@@ -249,6 +250,9 @@ class _AlbumImagePickerState extends State<AlbumImagePicker> {
         onPressed: () {
           Navigator.pop(context);
         },
-        icon: Text('Cancel'));
+        icon: const Text('Cancel'));
   }
+
+  @override
+  bool get wantKeepAlive =>true;
 }
