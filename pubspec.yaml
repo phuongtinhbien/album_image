@@ -1,6 +1,6 @@
 name: album_image
 description: Album Image is based in photo_manager package and has the same concept as image_picker, whether it is Android or iOS.
-version: 0.0.1+1
+version: 0.0.1+2
 homepage: https://github.com/phuongtinhbien/album_image.git
 repository: https://github.com/phuongtinhbien/album_image.git
 

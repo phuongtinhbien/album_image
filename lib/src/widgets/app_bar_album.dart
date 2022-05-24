@@ -119,8 +119,8 @@ class AppBarAlbum extends StatelessWidget {
                 child: AnimatedBuilder(
                   child: Icon(
                     Icons.keyboard_arrow_down,
-                    color: albumTextStyle.color!,
-                    size: albumTextStyle.fontSize! * 1.5,
+                    color: albumHeaderTextStyle.color!,
+                    size: albumHeaderTextStyle.fontSize! * 1.5,
                   ),
                   animation: arrowDownNotifier,
                   builder: (BuildContext context, child) {
