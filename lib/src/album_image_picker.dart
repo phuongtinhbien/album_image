@@ -72,6 +72,9 @@ class AlbumImagePicker extends StatefulWidget {
   ///appBar actions widgets
   final List<Widget>? appBarActionWidgets;
 
+  /// album header text color
+  final TextStyle albumHeaderTextStyle;
+
   /// album text color
   final TextStyle albumTextStyle;
 
@@ -103,6 +106,7 @@ class AlbumImagePicker extends StatefulWidget {
       this.selectedItemBackgroundColor = Colors.grey,
       this.appBarColor = Colors.redAccent,
       this.albumTextStyle = const TextStyle(color: Colors.white, fontSize: 18),
+      this.albumHeaderTextStyle = const TextStyle(color: Colors.white, fontSize: 18),
       this.albumSubTextStyle =
           const TextStyle(color: Colors.white, fontSize: 14),
       this.appBarHeight = 45,
@@ -207,6 +211,7 @@ class _AlbumImagePickerState extends State<AlbumImagePicker>
           albumBackGroundColor: widget.albumBackGroundColor,
           appBarColor: widget.appBarColor,
           albumTextStyle: widget.albumTextStyle,
+          albumHeaderTextStyle: widget.albumHeaderTextStyle,
           albumSubTextStyle: widget.albumSubTextStyle,
           height: widget.appBarHeight,
           appBarLeadingWidget: widget.closeWidget ?? _defaultCloseWidget(),

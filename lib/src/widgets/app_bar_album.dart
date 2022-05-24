@@ -12,6 +12,9 @@ class AppBarAlbum extends StatelessWidget {
   /// album background color
   final Color albumBackGroundColor;
 
+  /// album header text color
+  final TextStyle albumHeaderTextStyle;
+
   /// album text color
   final TextStyle albumTextStyle;
 
@@ -35,6 +38,7 @@ class AppBarAlbum extends StatelessWidget {
       required this.appBarColor,
       required this.albumBackGroundColor,
       required this.albumDividerColor,
+      this.albumHeaderTextStyle = const TextStyle(color: Colors.white, fontSize: 18),
       this.albumTextStyle = const TextStyle(color: Colors.white, fontSize: 18),
       this.albumSubTextStyle =
           const TextStyle(color: Colors.white, fontSize: 14),
@@ -108,7 +112,7 @@ class AppBarAlbum extends StatelessWidget {
               Text(
                 provider.currentPath!.name,
                 overflow: TextOverflow.ellipsis,
-                style: albumTextStyle,
+                style: albumHeaderTextStyle,
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 4),
