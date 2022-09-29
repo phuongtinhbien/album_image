@@ -1,3 +1,9 @@
+## 0.0.2
+* Replace iconSelectionBuilder by SelectionBuilder
+* Support centerTitle
+* Support render emptyAlbumThumbnail
+* Update package libs
+
 ## 0.0.1+2
 * Support albumHeaderTextStyle
 
