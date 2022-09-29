@@ -92,6 +92,8 @@ class AlbumImagePicker extends StatefulWidget {
 
   final bool centerTitle;
 
+  final Widget? emptyAlbumThumbnail;
+
   const AlbumImagePicker(
       {Key? key,
       this.maxSelection = 1,
@@ -121,7 +123,8 @@ class AlbumImagePicker extends StatefulWidget {
       this.selectionBuilder,
       this.scrollPhysics,
       this.scrollController,
-      this.onSelectedMax})
+      this.onSelectedMax,
+      this.emptyAlbumThumbnail})
       : super(key: key);
 
   @override
@@ -219,6 +222,7 @@ class _AlbumImagePickerState extends State<AlbumImagePicker>
           appBarLeadingWidget: widget.closeWidget,
           appBarActionWidgets: widget.appBarActionWidgets,
           centerTitle: widget.centerTitle,
+          emptyAlbumThumbnail: widget.emptyAlbumThumbnail,
         ),
 
         /// grid image view

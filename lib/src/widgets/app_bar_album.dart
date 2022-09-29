@@ -34,6 +34,8 @@ class AppBarAlbum extends StatelessWidget {
 
   final bool centerTitle;
 
+  final Widget? emptyAlbumThumbnail;
+
   const AppBarAlbum(
       {Key? key,
       required this.provider,
@@ -48,7 +50,8 @@ class AppBarAlbum extends StatelessWidget {
       this.height = 65,
       this.centerTitle = true,
       this.appBarLeadingWidget,
-      this.appBarActionWidgets})
+      this.appBarActionWidgets,
+      this.emptyAlbumThumbnail})
       : super(key: key);
 
   @override
@@ -164,6 +167,8 @@ class ChangePathWidget extends StatefulWidget {
 
   final double itemHeight;
 
+  final Widget? emptyAlbumThumbnail;
+
   const ChangePathWidget(
       {Key? key,
       required this.provider,
@@ -172,6 +177,7 @@ class ChangePathWidget extends StatefulWidget {
       required this.albumDividerColor,
       this.albumTextStyle,
       this.albumSubTextStyle,
+      this.emptyAlbumThumbnail,
       this.itemHeight = 65})
       : super(key: key);
 
@@ -232,6 +238,7 @@ class _ChangePathWidgetState extends State<ChangePathWidget> {
 
   Widget _buildItem(BuildContext context, int index) {
     final item = provider.pathList[index];
+
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: () {
@@ -241,14 +248,25 @@ class _ChangePathWidgetState extends State<ChangePathWidget> {
         padding: const EdgeInsets.all(8),
         child: Row(
           children: [
-            ClipRRect(
-                borderRadius: BorderRadius.circular(4),
-                child: Image(
-                  image: ThumbnailPath(item, thumbSize: 100),
-                  fit: BoxFit.cover,
-                  width: widget.itemHeight,
-                  height: widget.itemHeight,
-                )),
+            FutureBuilder<int>(
+                future: item.assetCountAsync,
+                builder: (context, snapshot) {
+                  if (snapshot.data != null && snapshot.data! > 0) {
+                    return ClipRRect(
+                        borderRadius: BorderRadius.circular(4),
+                        child: Image(
+                          image: ThumbnailPath(item, thumbSize: 100),
+                          fit: BoxFit.cover,
+                          width: widget.itemHeight,
+                          height: widget.itemHeight,
+                        ));
+                  }
+                  return SizedBox(
+                    width: widget.itemHeight,
+                    height: widget.itemHeight,
+                    child: widget.emptyAlbumThumbnail,
+                  );
+                }),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
