@@ -6,7 +6,7 @@ import 'package:photo_manager/photo_manager.dart';
 
 import 'enum/album_type.dart';
 
-typedef IconWidgetBuilder = Widget Function(
+typedef SelectionWidgetBuilder = Widget Function(
     BuildContext context, bool selected, int index);
 
 class AlbumImagePicker extends StatefulWidget {
@@ -64,7 +64,7 @@ class AlbumImagePicker extends StatefulWidget {
 
   ///Icon widget builder
   ///index = -1, not selected yet
-  final IconWidgetBuilder? iconSelectionBuilder;
+  final SelectionWidgetBuilder? selectionBuilder;
 
   ///Close widget
   final Widget? closeWidget;
@@ -90,6 +90,8 @@ class AlbumImagePicker extends StatefulWidget {
   /// album divider color
   final Color albumDividerColor;
 
+  final bool centerTitle;
+
   const AlbumImagePicker(
       {Key? key,
       this.maxSelection = 1,
@@ -106,15 +108,17 @@ class AlbumImagePicker extends StatefulWidget {
       this.selectedItemBackgroundColor = Colors.grey,
       this.appBarColor = Colors.redAccent,
       this.albumTextStyle = const TextStyle(color: Colors.white, fontSize: 18),
-      this.albumHeaderTextStyle = const TextStyle(color: Colors.white, fontSize: 18),
+      this.albumHeaderTextStyle =
+          const TextStyle(color: Colors.white, fontSize: 18),
       this.albumSubTextStyle =
           const TextStyle(color: Colors.white, fontSize: 14),
       this.appBarHeight = 45,
       this.albumBackGroundColor = const Color(0xFF333333),
       this.albumDividerColor = const Color(0xFF484848),
+      this.centerTitle = true,
       this.appBarActionWidgets,
       this.closeWidget,
-      this.iconSelectionBuilder,
+      this.selectionBuilder,
       this.scrollPhysics,
       this.scrollController,
       this.onSelectedMax})
@@ -139,9 +143,7 @@ class _AlbumImagePickerState extends State<AlbumImagePicker>
   @override
   void didUpdateWidget(covariant AlbumImagePicker oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // if (oldWidget.selected != widget.selected) {
-    //   provider.picked
-    // }
+
     if (oldWidget.maxSelection != widget.maxSelection) {
       provider.max = widget.maxSelection;
     }
@@ -214,8 +216,9 @@ class _AlbumImagePickerState extends State<AlbumImagePicker>
           albumHeaderTextStyle: widget.albumHeaderTextStyle,
           albumSubTextStyle: widget.albumSubTextStyle,
           height: widget.appBarHeight,
-          appBarLeadingWidget: widget.closeWidget ?? _defaultCloseWidget(),
+          appBarLeadingWidget: widget.closeWidget,
           appBarActionWidgets: widget.appBarActionWidgets,
+          centerTitle: widget.centerTitle,
         ),
 
         /// grid image view
@@ -235,7 +238,7 @@ class _AlbumImagePickerState extends State<AlbumImagePicker>
                     gridViewPhysics: widget.scrollPhysics,
                     imageBackgroundColor: widget.itemBackgroundColor,
                     selectedBackgroundColor: widget.selectedItemBackgroundColor,
-                    iconSelectionBuilder: widget.iconSelectionBuilder,
+                    selectionBuilder: widget.selectionBuilder,
                     thumbnailBoxFix: widget.thumbnailBoxFix,
                     selectedCheckBackgroundColor:
                         widget.selectedItemBackgroundColor,

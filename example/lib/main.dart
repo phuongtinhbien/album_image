@@ -26,14 +26,12 @@ class _MyAppState extends State<MyApp> {
           final thumbnailQuality = MediaQuery.of(context).size.width ~/ 3;
           return AlbumImagePicker(
             onSelected: (items) {},
-            iconSelectionBuilder: (_, selected, index) {
+            selectionBuilder: (_, selected, index) {
               if (selected) {
-                return CircleAvatar(
-                  child: Text(
-                    '${index + 1}',
-                    style: const TextStyle(fontSize: 10, height: 1.4),
+                return Container(
+                  decoration: BoxDecoration(
+                    border: Border.all()
                   ),
-                  radius: 10,
                 );
               }
               return Container();
@@ -43,6 +41,8 @@ class _MyAppState extends State<MyApp> {
             onSelectedMax: () {
               print('Reach max');
             },
+            centerTitle: true,
+             albumHeaderTextStyle: const TextStyle(color: Colors.black, fontSize: 14),
             albumBackGroundColor: Colors.white,
             appBarHeight: 45,
             itemBackgroundColor: Colors.grey[100]!,

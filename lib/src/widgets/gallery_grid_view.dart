@@ -40,7 +40,7 @@ class GalleryGridView extends StatefulWidget {
   final Color selectedBackgroundColor;
 
   /// builder icon selection
-  final IconWidgetBuilder? iconSelectionBuilder;
+  final SelectionWidgetBuilder? selectionBuilder;
 
   /// selected Check Background Color
   final Color selectedCheckBackgroundColor;
@@ -70,7 +70,7 @@ class GalleryGridView extends StatefulWidget {
       this.thumbnailBoxFix = BoxFit.cover,
       this.selectedCheckBackgroundColor = Colors.white,
       this.thumbnailQuality = 200,
-      this.iconSelectionBuilder})
+      this.selectionBuilder})
       : super(key: key);
 
   @override
@@ -95,23 +95,27 @@ class _GalleryGridViewState extends State<GalleryGridView> {
       onNotification: _onScroll,
       child: Container(
         color: widget.gridViewBackgroundColor,
-        child: GridView.builder(
-          key: ValueKey(widget.path),
-          padding: widget.padding,
-          physics: widget.gridViewPhysics,
-          controller: widget.gridViewController,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            childAspectRatio: widget.childAspectRatio,
-            crossAxisCount: widget.crossAxisCount,
-            mainAxisSpacing: 2.5,
-            crossAxisSpacing: 2.5,
-          ),
+        child: FutureBuilder<int>(
+            future: widget.path.assetCountAsync,
+            builder: (context, snapshot) {
+              return GridView.builder(
+                key: ValueKey(widget.path),
+                padding: widget.padding,
+                physics: widget.gridViewPhysics,
+                controller: widget.gridViewController,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  childAspectRatio: widget.childAspectRatio,
+                  crossAxisCount: widget.crossAxisCount,
+                  mainAxisSpacing: 2.5,
+                  crossAxisSpacing: 2.5,
+                ),
 
-          /// render thumbnail
-          itemBuilder: (context, index) =>
-              _buildItem(context, index, widget.provider),
-          itemCount: widget.path.assetCount,
-        ),
+                /// render thumbnail
+                itemBuilder: (context, index) =>
+                    _buildItem(context, index, widget.provider),
+                itemCount: snapshot.data ?? 0,
+              );
+            }),
       ),
     );
   }
@@ -156,7 +160,7 @@ class _GalleryGridViewState extends State<GalleryGridView> {
           provider: provider,
           thumbnailQuality: widget.thumbnailQuality,
           selectedBackgroundColor: widget.selectedBackgroundColor,
-          iconSelectionBuilder: widget.iconSelectionBuilder,
+          selectionBuilder: widget.selectionBuilder,
           imageBackgroundColor: widget.imageBackgroundColor,
           fit: widget.thumbnailBoxFix,
           selectedCheckBackgroundColor: widget.selectedCheckBackgroundColor,

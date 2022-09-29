@@ -32,17 +32,21 @@ class AppBarAlbum extends StatelessWidget {
 
   final double height;
 
+  final bool centerTitle;
+
   const AppBarAlbum(
       {Key? key,
       required this.provider,
       required this.appBarColor,
       required this.albumBackGroundColor,
       required this.albumDividerColor,
-      this.albumHeaderTextStyle = const TextStyle(color: Colors.white, fontSize: 18),
+      this.albumHeaderTextStyle =
+          const TextStyle(color: Colors.white, fontSize: 18),
       this.albumTextStyle = const TextStyle(color: Colors.white, fontSize: 18),
       this.albumSubTextStyle =
           const TextStyle(color: Colors.white, fontSize: 14),
       this.height = 65,
+      this.centerTitle = true,
       this.appBarLeadingWidget,
       this.appBarActionWidgets})
       : super(key: key);
@@ -58,7 +62,7 @@ class AppBarAlbum extends StatelessWidget {
         backgroundColor: appBarColor,
         actions: appBarActionWidgets,
         title: _buildAlbumButton(context, ValueNotifier(false)),
-        centerTitle: true,
+        centerTitle: centerTitle,
       ),
     );
   }
@@ -82,31 +86,11 @@ class AppBarAlbum extends StatelessWidget {
       );
     } else {
       return GestureDetector(
-        onTap: () {
-          showModalBottomSheet(
-              context: context,
-              constraints: BoxConstraints(
-                  maxHeight: MediaQuery.of(context).size.height / 2.5),
-              enableDrag: true,
-              backgroundColor: Colors.transparent,
-              builder: (_) {
-                return ChangePathWidget(
-                  albumDividerColor: albumDividerColor,
-                  albumTextStyle: albumTextStyle,
-                  albumSubTextStyle: albumSubTextStyle,
-                  provider: provider,
-                  itemHeight: 45,
-                  close: (value) {
-                    provider.currentPath = value;
-                    Navigator.pop(context);
-                  },
-                  albumBackGroundColor: albumBackGroundColor,
-                );
-              });
-        },
+        onTap: () => onSelectAlbum(context),
         child: Container(
           decoration: decoration,
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
@@ -117,11 +101,6 @@ class AppBarAlbum extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 4),
                 child: AnimatedBuilder(
-                  child: Icon(
-                    Icons.keyboard_arrow_down,
-                    color: albumHeaderTextStyle.color!,
-                    size: albumHeaderTextStyle.fontSize! * 1.5,
-                  ),
                   animation: arrowDownNotifier,
                   builder: (BuildContext context, child) {
                     return AnimatedContainer(
@@ -129,6 +108,11 @@ class AppBarAlbum extends StatelessWidget {
                       child: child,
                     );
                   },
+                  child: Icon(
+                    Icons.keyboard_arrow_down,
+                    color: albumHeaderTextStyle.color!,
+                    size: albumHeaderTextStyle.fontSize! * 1.5,
+                  ),
                 ),
               ),
             ],
@@ -136,6 +120,29 @@ class AppBarAlbum extends StatelessWidget {
         ),
       );
     }
+  }
+
+  void onSelectAlbum(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        constraints:
+            BoxConstraints(maxHeight: MediaQuery.of(context).size.height / 2.5),
+        enableDrag: true,
+        backgroundColor: Colors.transparent,
+        builder: (_) {
+          return ChangePathWidget(
+            albumDividerColor: albumDividerColor,
+            albumTextStyle: albumTextStyle,
+            albumSubTextStyle: albumSubTextStyle,
+            provider: provider,
+            itemHeight: 45,
+            close: (value) {
+              provider.currentPath = value;
+              Navigator.pop(context);
+            },
+            albumBackGroundColor: albumBackGroundColor,
+          );
+        });
   }
 }
 
@@ -226,6 +233,10 @@ class _ChangePathWidgetState extends State<ChangePathWidget> {
   Widget _buildItem(BuildContext context, int index) {
     final item = provider.pathList[index];
     return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () {
+        widget.close.call(item);
+      },
       child: Padding(
         padding: const EdgeInsets.all(8),
         child: Row(
@@ -271,10 +282,6 @@ class _ChangePathWidgetState extends State<ChangePathWidget> {
           ],
         ),
       ),
-      behavior: HitTestBehavior.translucent,
-      onTap: () {
-        widget.close.call(item);
-      },
     );
   }
 }

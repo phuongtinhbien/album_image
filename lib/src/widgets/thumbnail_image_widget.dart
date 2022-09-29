@@ -21,7 +21,7 @@ class ThumbnailImageWidget extends StatelessWidget {
   final Color selectedBackgroundColor;
 
   /// builder icon selection
-  final IconWidgetBuilder? iconSelectionBuilder;
+  final SelectionWidgetBuilder? selectionBuilder;
 
   /// selected Check Background Color
   final Color selectedCheckBackgroundColor;
@@ -38,7 +38,7 @@ class ThumbnailImageWidget extends StatelessWidget {
     this.selectedBackgroundColor = Colors.white,
     this.fit = BoxFit.cover,
     this.selectedCheckBackgroundColor = Colors.white,
-    this.iconSelectionBuilder,
+    this.selectionBuilder,
   }) : super(key: key);
 
   @override
@@ -90,16 +90,9 @@ class ThumbnailImageWidget extends StatelessWidget {
                   ),
 
                   /// selected image check
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 5, top: 5),
-                      child: iconSelectionBuilder != null
-                          ? iconSelectionBuilder!
-                              .call(context, picked, pickIndex)
-                          : defaultIconSelectionBuilder(context, picked),
-                    ),
-                  ),
+                  selectionBuilder != null
+                      ? selectionBuilder!.call(context, picked, pickIndex)
+                      : defaultIconSelectionBuilder(context, picked),
                 ],
               );
             }),
@@ -146,23 +139,27 @@ class ThumbnailImageWidget extends StatelessWidget {
   }
 
   Widget defaultIconSelectionBuilder(BuildContext context, bool picked) {
-    return AnimatedOpacity(
-      duration: const Duration(milliseconds: 200),
-      opacity: picked ? 1 : 0,
-      child: Container(
-        height: 20,
-        width: 20,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: picked
-              ? selectedCheckBackgroundColor.withOpacity(0.6)
-              : Colors.transparent,
-          border: Border.all(width: 1.5, color: Colors.white),
-        ),
-        child: const Icon(
-          Icons.check,
-          color: Colors.white,
-          size: 14,
+    return Align(
+      alignment: Alignment.topRight,
+      child: AnimatedOpacity(
+        duration: const Duration(milliseconds: 200),
+        opacity: picked ? 1 : 0,
+        child: Container(
+          height: 20,
+          width: 20,
+          margin: const EdgeInsets.only(right: 5, top: 5),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: picked
+                ? selectedCheckBackgroundColor.withOpacity(0.6)
+                : Colors.transparent,
+            border: Border.all(width: 1.5, color: Colors.white),
+          ),
+          child: const Icon(
+            Icons.check,
+            color: Colors.white,
+            size: 14,
+          ),
         ),
       ),
     );
