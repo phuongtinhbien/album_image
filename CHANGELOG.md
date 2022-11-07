@@ -1,5 +1,6 @@
 ## 0.0.2+1
 * Update Readme.md
+* Update dependency libs
 
 ## 0.0.2
 * Replace iconSelectionBuilder by SelectionBuilder
