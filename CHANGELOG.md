@@ -1,3 +1,6 @@
+## 0.0.2+1
+* Update Readme.md
+
 ## 0.0.2
 * Replace iconSelectionBuilder by SelectionBuilder
 * Support centerTitle

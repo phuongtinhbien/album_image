@@ -13,8 +13,8 @@ Album Image is based in [photo_manager](https://pub.dev/packages/photo_manager) 
 
 ## Demo Images
 
-<img src="https://github.com/phuongtinhbien/album_image/blob/master/example_images/2022-05-20%2017.09.10.jpg" title="custom view" width="200" style="display: inline"/>
-<img src="https://github.com/phuongtinhbien/album_image/blob/master/example_images/2022-05-20%2017.09.13.jpg" title="custom view" width="200" style="display: inline"/>
+<img src="https://github.com/phuongtinhbien/album_image/blob/master/example_images/2022-05-20%2017.09.10.jpg?raw=true" title="custom view" width="200" style="display: inline"/>
+<img src="https://github.com/phuongtinhbien/album_image/blob/master/example_images/2022-05-20%2017.09.13.jpg?raw=true" title="custom view" width="200" style="display: inline"/>
 
 
 ## Installation
