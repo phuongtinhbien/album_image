@@ -48,7 +48,7 @@ mixin PhotoDataProvider on ChangeNotifier {
     list.sort(sortBy);
     pathList.clear();
     pathList.addAll(list);
-    currentPath = list[defaultIndex];
+    currentPath = list.isNotEmpty ? list[defaultIndex] : null;
     pathListNotifier.value = pathList;
     notifyListeners();
   }
